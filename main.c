@@ -7,22 +7,23 @@
 * Related Document: See README.md
 *
 *******************************************************************************
-* (c) 2020, Cypress Semiconductor Corporation. All rights reserved.
-*******************************************************************************
-* This software, including source code, documentation and related materials
-* ("Software"), is owned by Cypress Semiconductor Corporation or one of its
-* subsidiaries ("Cypress") and is protected by and subject to worldwide patent
-* protection (United States and foreign), United States copyright laws and
-* international treaty provisions. Therefore, you may use this Software only
-* as provided in the license agreement accompanying the software package from
-* which you obtained this Software ("EULA").
+* Copyright 2021, Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
+* This software, including source code, documentation and related
+* materials ("Software") is owned by Cypress Semiconductor Corporation
+* or one of its affiliates ("Cypress") and is protected by and subject to
+* worldwide patent protection (United States and foreign),
+* United States copyright laws and international treaty provisions.
+* Therefore, you may use this Software only as provided in the license
+* agreement accompanying the software package from which you
+* obtained this Software ("EULA").
 * If no EULA applies, Cypress hereby grants you a personal, non-exclusive,
-* non-transferable license to copy, modify, and compile the Software source
-* code solely for use in connection with Cypress's integrated circuit products.
-* Any reproduction, modification, translation, compilation, or representation
-* of this Software except as specified above is prohibited without the express
-* written permission of Cypress.
+* non-transferable license to copy, modify, and compile the Software
+* source code solely for use in connection with Cypress's
+* integrated circuit products.  Any reproduction, modification, translation,
+* compilation, or representation of this Software except as specified
+* above is prohibited without the express written permission of Cypress.
 *
 * Disclaimer: THIS SOFTWARE IS PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND,
 * EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, NONINFRINGEMENT, IMPLIED
@@ -33,9 +34,9 @@
 * not authorize its products for use in any products where a malfunction or
 * failure of the Cypress product may reasonably be expected to result in
 * significant property damage, injury or death ("High Risk Product"). By
-* including Cypress's product in a High Risk Product, the manufacturer of such
-* system or application assumes all risk of such use and in doing so agrees to
-* indemnify Cypress against all liability.
+* including Cypress's product in a High Risk Product, the manufacturer
+* of such system or application assumes all risk of such use and in doing
+* so agrees to indemnify Cypress against all liability.
 *******************************************************************************/
 
 
@@ -65,6 +66,12 @@
 *******************************************************************************/
 cy_stc_scb_ezi2c_context_t ezi2c_context;
 
+#if CY_CAPSENSE_BIST_EN
+/* Variables to hold sensor parasitic capacitances and status*/
+uint32_t button0_cp = 0, button1_cp = 0;
+cy_en_capsense_bist_status_t button0_cp_status, button1_cp_status;
+#endif /* CY_CAPSENSE_BIST_EN */
+
 
 /*******************************************************************************
 * Function Prototypes
@@ -75,7 +82,10 @@ static void capsense_msc1_isr(void);
 static void ezi2c_isr(void);
 static void initialize_capsense_tuner(void);
 static void led_control(void);
-static void configure_pump(void);
+
+#if CY_CAPSENSE_BIST_EN
+static void measure_sensor_cp(void);
+#endif /* CY_CAPSENSE_BIST_EN */
 
 
 /*******************************************************************************
@@ -114,6 +124,11 @@ int main(void)
     /* Initialize MSC CapSense */
     initialize_capsense();
 
+#if CY_CAPSENSE_BIST_EN
+    /* Measure the self capacitance of sensor electrode using BIST */
+    measure_sensor_cp();
+#endif /* CY_CAPSENSE_BIST_EN */
+
     /* Start the first scan */
     Cy_CapSense_ScanAllSlots(&cy_capsense_context);
 
@@ -132,6 +147,9 @@ int main(void)
 
             /* Start the next scan */
             Cy_CapSense_ScanAllSlots(&cy_capsense_context);
+
+            /* Toggles GPIO for refresh rate measurement. Probe at P10.4. */
+            Cy_GPIO_Inv(CYBSP_SENSE_SCAN_RATE_PORT, CYBSP_SENSE_SCAN_RATE_NUM);
         }
     }
 }
@@ -163,9 +181,6 @@ static void initialize_capsense(void)
         .intrPriority = CAPSENSE_MSC1_INTR_PRIORITY,
     };
 
-    /* Configure the pump circuit for CapSense operation */
-    configure_pump();
-
     /* Capture the MSC HW block and initialize it to the default state. */
     status = Cy_CapSense_Init(&cy_capsense_context);
 
@@ -187,7 +202,9 @@ static void initialize_capsense(void)
 
     if(status != CY_CAPSENSE_STATUS_SUCCESS)
     {
-        CY_ASSERT(CY_ASSERT_FAILED);
+        /* This status could fail before tuning the sensors correctly.
+         * Ensure that this function passes after the CapSense sensors are tuned
+         * as per procedure give in the Readme.md file */
     }
 }
 
@@ -302,33 +319,28 @@ static void ezi2c_isr(void)
 }
 
 
+#if CY_CAPSENSE_BIST_EN
 /*******************************************************************************
-* Function Name: configure_pump
+* Function Name: measure_sensor_cp
 ********************************************************************************
 * Summary:
-* Configure the pump circuit for CapSense operation. Pump needs to be enabled
-* when VDDA <= 3.8V. This is a workaround and it will be addressed in future
-* releases of PDL (CY_ID: 4762)
+*  Measures the self capacitance of the sensor electrode (Cp) in Femto Farad and
+*  stores its value in the variable button0_cp and button1_cp.
 *
 *******************************************************************************/
-static void configure_pump(void)
+static void measure_sensor_cp(void)
 {
-    #define CY_PUMP_VDDA_VOLTAGE_MV (3800u)
+    /* Measure the self capacitance of sensor 0 electrode */
+    button0_cp_status = Cy_CapSense_MeasureCapacitanceSensorElectrode(CY_CAPSENSE_BUTTON0_WDGT_ID,
+                                                  CY_CAPSENSE_BUTTON0_SNS0_ID, &cy_capsense_context);
+    button0_cp = cy_capsense_context.ptrWdConfig[CY_CAPSENSE_BUTTON0_WDGT_ID].ptrEltdCapacitance[CY_CAPSENSE_BUTTON0_SNS0_ID];
 
-    #if (defined (srss_0_power_0_ENABLED)) && (srss_0_power_0_ENABLED == 1)
-        if (CY_PUMP_VDDA_VOLTAGE_MV >= CY_CFG_PWR_VDDA_MV)
-            {
-                /* SRSSLT register write to use main IMO output for pump */
-                SRSSLT_CLK_SELECT |= (1u << SRSSLT_CLK_SELECT_PUMP_SEL_Pos);
-                /* Setting Up the pump in HSIOM */
-                HSIOM->PUMP_CTL |= (1u << HSIOM_PUMP_CTL_ENABLED_Pos);
-            }
-    #else
-        /* If the below error is thrown during build and compile. Enable and
-         * specify VDDA in Power settings on the Device Configurator. For more
-         * details refer to readme.md */
-        #error *** Configure VDDA in power settings ***;
-    #endif
+    /* Measure the self capacitance of sensor 1 electrode */
+    button1_cp_status = Cy_CapSense_MeasureCapacitanceSensorElectrode(CY_CAPSENSE_BUTTON1_WDGT_ID,
+                                                  CY_CAPSENSE_BUTTON1_SNS0_ID, &cy_capsense_context);
+    button1_cp = cy_capsense_context.ptrWdConfig[CY_CAPSENSE_BUTTON1_WDGT_ID].ptrEltdCapacitance[CY_CAPSENSE_BUTTON1_SNS0_ID];
 }
+#endif /* CY_CAPSENSE_BIST_EN */
+
 
 /* [] END OF FILE */
