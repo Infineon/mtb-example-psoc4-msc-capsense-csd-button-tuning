@@ -7,7 +7,7 @@
 * Related Document: See README.md
 *
 *******************************************************************************
-* Copyright 2021, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2021-2022, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -95,6 +95,7 @@ static void measure_sensor_cp(void);
 *  System entrance point. This function performs
 *  - initial setup of device
 *  - initialize CapSense
+*  - perform Cp measurement if Built-in Self test (BIST) is enabled
 *  - initialize tuner communication
 *  - scan touch input continuously
 *
@@ -269,7 +270,7 @@ static void initialize_capsense_tuner(void)
      * the Tuner or the Bridge Control Panel can read this buffer but you can
      * connect only one tool at a time.
      */
-    Cy_SCB_EZI2C_SetBuffer1(CYBSP_EZI2C_HW, (uint8 *)&cy_capsense_tuner,
+    Cy_SCB_EZI2C_SetBuffer1(CYBSP_EZI2C_HW, (uint8_t *)&cy_capsense_tuner,
                             sizeof(cy_capsense_tuner), sizeof(cy_capsense_tuner),
                             &ezi2c_context);
 
