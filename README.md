@@ -1,37 +1,35 @@
 # PSoC&trade; 4: MSC CAPSENSE&trade; CSD button tuning
 
-This code example demonstrates how to use the CAPSENSE&trade; middleware to detect a finger touch on a self-capacitance-based Button widget in PSoC&trade; 4 devices with multi sense converter (MSC).
+This code example demonstrates how to use the CAPSENSE&trade; middleware to detect a finger touch on a self-capacitance-based button widget in PSoC&trade; 4 devices with multi sense converter (MSC).
 
-In addition, this Readme also explains how to manually tune the self-capacitance-based button for optimum performance w.r.t parameters such as reliability, power consumption, response time and linearity using the CSD-RM sensing technique and CAPSENSE&trade; tuner GUI. Here,  CSD (CAPSENSE&trade; sigma delta) represents the self-capacitance sensing technique and RM represents the ratiometric method.
+In addition, this code example also explains how to manually tune the self-capacitance-based button for optimum performance with respect to parameters such as reliability, power consumption, response time, and linearity using the CSD-RM sensing technique and CAPSENSE&trade; tuner GUI. Here, capacitive sigma-delta (CSD) represents the self-capacitance sensing technique and RM represents the ratiometric method.
 
 [View this README on GitHub.](https://github.com/Infineon/mtb-example-psoc4-msc-capsense-csd-button-tuning)
 
-[Provide feedback on this code example.](https://cypress.co1.qualtrics.com/jfe/form/SV_1NTns53sK2yiljn?Q_EED=eyJVbmlxdWUgRG9jIElkIjoiQ0UyMzEwNzgiLCJTcGVjIE51bWJlciI6IjAwMi0zMTA3OCIsIkRvYyBUaXRsZSI6IlBTb0MmdHJhZGU7IDQ6IE1TQyBDQVBTRU5TRSZ0cmFkZTsgQ1NEIGJ1dHRvbiB0dW5pbmciLCJyaWQiOiJibHBkIiwiRG9jIHZlcnNpb24iOiIzLjAuMCIsIkRvYyBMYW5ndWFnZSI6IkVuZ2xpc2giLCJEb2MgRGl2aXNpb24iOiJNQ0QiLCJEb2MgQlUiOiJJQ1ciLCJEb2MgRmFtaWx5IjoiUFNPQyJ9)
-
+[Provide feedback on this code example.](https://cypress.co1.qualtrics.com/jfe/form/SV_1NTns53sK2yiljn?Q_EED=eyJVbmlxdWUgRG9jIElkIjoiQ0UyMzEwNzgiLCJTcGVjIE51bWJlciI6IjAwMi0zMTA3OCIsIkRvYyBUaXRsZSI6IlBTb0MmdHJhZGU7IDQ6IE1TQyBDQVBTRU5TRSZ0cmFkZTsgQ1NEIGJ1dHRvbiB0dW5pbmciLCJyaWQiOiJibHBkIiwiRG9jIHZlcnNpb24iOiIzLjEuMCIsIkRvYyBMYW5ndWFnZSI6IkVuZ2xpc2giLCJEb2MgRGl2aXNpb24iOiJNQ0QiLCJEb2MgQlUiOiJJQ1ciLCJEb2MgRmFtaWx5IjoiUFNPQyJ9)
 
 ## Requirements
 
-- [ModusToolbox&trade; software](https://www.infineon.com/modustoolbox) v3.0 or later (tested with v3.0)
-
-   **Note:** This code example version requires ModusToolbox&trade; software version 3.0 or later and is not backward compatible with v2.4 or older versions.
-
+- [ModusToolbox&trade; software](https://www.infineon.com/modustoolbox) v3.1 or later (tested with v3.1)
 - Board support package (BSP) minimum required version: 3.0.0
 - Programming language: C
 - Associated parts: [PSoC&trade; 4100S Max](https://www.infineon.com/cms/en/product/microcontroller/32-bit-psoc-arm-cortex-microcontroller/psoc-4-32-bit-arm-cortex-m0-mcu/psoc-4100/)
 
 ## Supported toolchains (make variable 'TOOLCHAIN')
 
-- GNU Arm&reg; embedded compiler v10.3.1 (`GCC_ARM`) - Default value of `TOOLCHAIN`
+- GNU Arm&reg; embedded compiler v11.3.1 (`GCC_ARM`) - Default value of `TOOLCHAIN`
 - Arm&reg; compiler v6.16 (`ARM`)
 - IAR C/C++ compiler v9.30.1 (`IAR`)
 
+
 ## Supported kits (make variable 'TARGET')
 
-- [PSoC&trade; 4100S Max pioneer kit](https://www.infineon.com/CY8CKIT-041S-MAX) (`CY8CKIT-041S-MAX`) - Default value of `TARGET`
+- [PSoC&trade; 4100S Max Pioneer Kit](https://www.infineon.com/CY8CKIT-041S-MAX) (`CY8CKIT-041S-MAX`) - Default value of `TARGET`
+
 
 ## Hardware setup
 
-This example uses the board's default configuration. See the [kit user guide](https://www.infineon.com/dgdl/Infineon-CY8CKIT-041S-MAX_PSoC_4100S_Max_Pioneer_Kit_Guide-UserManual-v01_00-EN.pdf?fileId=8ac78c8c7d710014017d71538d1f209d) to ensure that the board is configured correctly to V<sub>DDA</sub> at 5V (J10 should be at position 1 and 2). If you are using the code example at a V<sub>DDA</sub> voltage other than 5 V, ensure to set up the device power voltages correctly for the proper operation of the device power domains.  See [Steps to setup the V<sub>DDA</sub> supply voltage in Device Configurator](#steps-to-setup-the-vdda-supply-voltage-in-device-configurator) for more details.
+This example uses the board's default configuration. See the [kit user guide](https://www.infineon.com/dgdl/Infineon-CY8CKIT-041S-MAX_PSoC_4100S_Max_Pioneer_Kit_Guide-UserManual-v01_00-EN.pdf?fileId=8ac78c8c7d710014017d71538d1f209d) to ensure that the board is configured correctly to V<sub>DDA</sub> at 5 V (J10 should be at positions 1 and 2). If you are using the code example at a V<sub>DDA</sub> voltage other than 5 V, ensure to set up the device power voltages correctly for the proper operation of the device power domains.  See [Steps to setup the V<sub>DDA</sub> supply voltage in Device Configurator](#setup-the-vdda-supply-voltage-in-device-configurator) for more details.
 
 ## Software setup
 
@@ -90,7 +88,7 @@ The following example clones the "[CSD button tuning](https://github.com/Infineo
 
 **Note:** The project-creator-cli tool uses the `git clone` and `make getlibs` commands to fetch the repository and import the required libraries. For details, see the "Project creator tools" section of the [ModusToolbox&trade; software user guide](https://www.infineon.com/ModusToolboxUserGuide) (locally available at *{ModusToolbox&trade; software install directory}/docs_{version}/mtb_user_guide.pdf*).
 
-To work with a different supported kit later, use the [Library Manager](https://www.infineon.com/ModusToolboxLibraryManager) to choose the BSP for the supported kit. You can invoke the Library Manager GUI tool from the terminal using `make modlibs` command or use the Library Manager CLI tool "library-manager-cli" to change the BSP.
+To work with a different supported kit later, use the [Library Manager](https://www.infineon.com/ModusToolboxLibraryManager) to choose the BSP for the supported kit. You can invoke the Library Manager GUI tool from the terminal using `make library-manager` command or use the Library Manager CLI tool "library-manager-cli" to change the BSP.
 
 The "library-manager-cli" tool has the following arguments:
 
@@ -100,6 +98,16 @@ Argument | Description | Required/optional
 `--set-active-bsp` | Name of the BSP that should be as active BSP for the application | Required
 `--add-bsp-version`| Specify the version of the BSP that should be added to the application if you do not wish to use the latest from manifest | Optional
 `--add-bsp-location`| Specify the location of the BSP (local/shared) if you prefer to add the BSP in a shared path | Optional
+
+<br />
+
+Following example adds the CY8CKIT-041S-MAX BSP to the already created application and makes it the active BSP for the app:
+
+   ```
+   ~/ModusToolbox/tools_{version}/library-manager/library-manager-cli --project "C:/mtb_projects/MSCCSDButtonTuning" --add-bsp-name CY8CKIT-041S-MAX --add-bsp-version "latest-v4.X" --add-bsp-location "local"
+
+   ~/ModusToolbox/tools_{version}/library-manager/library-manager-cli --project "C:/mtb_projects/MSCCSDButtonTuning" --set-active-bsp APP_CY8CKIT-041S-MAX
+   ```
 
 </details>
 
@@ -134,7 +142,7 @@ For a list of supported IDEs and more details, see the "Exporting to IDEs" secti
 
 ## Operation
 
-1. Connect the board to your PC using the provided micro USB cable through the KitProg3 USB connector on J8 as follows:
+1. Connect the board to your PC using the provided micro USB cable through the KitProg3 USB connector on J8 as shown in **Figure 1**:
 
    **Figure 1. Connecting the CY8CKIT-041S-MAX to a computer**
 
@@ -144,10 +152,10 @@ For a list of supported IDEs and more details, see the "Exporting to IDEs" secti
 
    <details><summary><b>Using Eclipse IDE for ModusToolbox&trade; software</b></summary>
 
-      1. Select the application Project in the Project Explorer.
+      1. Select the application project in the Project Explorer.
 
-      2. In the **Quick panel**, scroll down, and click **\<Application Name> Program (KitProg3_MiniProg4)**.
-      </details>
+      2. In the **Quick Panel**, scroll down, and click **\<Application Name> Program (KitProg3_MiniProg4)**.
+   </details>
 
    <details><summary><b>Using CLI</b></summary>
 
@@ -168,17 +176,17 @@ For a list of supported IDEs and more details, see the "Exporting to IDEs" secti
 
 5. You can also monitor the CAPSENSE&trade; data using the CAPSENSE&trade; tuner application as follows:
 
-    **Monitor data using CAPSENSE&trade; tuner**
+### Monitor data using the CAPSENSE&trade; tuner
 
-    1. Open CAPSENSE&trade; tuner from the tools section in the IDE Quick panel. 
+1. Open the CAPSENSE&trade; tuner from the **Tools** section in the IDE Quick Panel.
     
-        You can also run the CAPSENSE&trade; tuner application standalone from the *{ModusToolbox&trade; software install directory}/ModusToolbox/tools_{version}/capsense-configurator/capsense-tuner*. In this case, after opening the application, select **File** > **Open** and open the *design.cycapsense* file of the respective application, which is present in the *{Application root directory}/bsps/TARGET_\<BSP-NAME>/config* folder. 
+   You can also run the CAPSENSE&trade; tuner application standalone from *{ModusToolbox&trade; software install directory}/ModusToolbox/tools_{version}/capsense-configurator/capsense-tuner*. In this case, after opening the application; select **File** > **Open** and open the *design.cycapsense* file of the respective application, which is in the *{Application root directory}/bsps/TARGET_\<BSP-NAME>/config* folder.
 
-        See the [ModusToolbox&trade; software user guide](https://www.infineon.com/ModusToolboxUserGuide) (locally available at *{ModusToolbox&trade; software install directory}/docs_{version}/mtb_user_guide.pdf*)for options to open the CAPSENSE&trade; tuner application using the CLI.
+   See the [ModusToolbox&trade; software user guide](https://www.infineon.com/ModusToolboxUserGuide) (locally available at *{ModusToolbox&trade; install directory}/docs_{version}/mtb_user_guide.pdf*) for options to open the CAPSENSE&trade; tuner application using the CLI.
 
-    2. Ensure that the kit is in CMSIS-DAP bulk mode (KitProg3 Status LED is ON and not blinking). See [Firmware-loader](https://github.com/Infineon/Firmware-loader) to learn on how to update the firmware and switch modes in KitProg3.
+2. Ensure that the kit is in CMSIS-DAP bulk mode (KitProg3 status LED is ON and not blinking). See [Firmware-loader](https://github.com/Infineon/Firmware-loader) to learn how to update the firmware and switch modes in KitProg3.
   
-    3. In the tuner application, click on the **Tuner communication setup** icon or select **Tools** > **Tuner communication setup**. In the window that appears, select the I2C checkbox under KitProg3 and configure as follows:
+    3. In the tuner application, click on the **Tuner Communication Setup** icon or select **Tools** > **Tuner Communication Setup**. In the window that appears, select the I2C checkbox under KitProg3 and configure as follows:
 
        - **I2C address:** 8
        - **Sub-address:** 2 bytes
@@ -186,7 +194,7 @@ For a list of supported IDEs and more details, see the "Exporting to IDEs" secti
 
         These are the same values set in the EZI2C resource.
 
-        **Figure 2. Tuner communication setup parameters**
+        **Figure 2. Tuner Communication Setup parameters**
 
         <img src="images/tuner-comm-setup.png" alt="Figure 2"/>
 
@@ -216,11 +224,11 @@ For a list of supported IDEs and more details, see the "Exporting to IDEs" secti
 
        <img src="images/tuner-graph-view-intro.png" alt="Figure 6"/>
 
-    8. Observe the **Widget/Sensor parameters** section in the CAPSENSE&trade; tuner window as shown in **Figure 6**.
+    8. Observe the **Widget/Sensor Parameters** section in the CAPSENSE&trade; tuner window as shown in **Figure 6**.
       
    9. Switch to the **SNR Measurement** tab for measuring the SNR and verify that the SNR is above 5:1, select **Button1** and **Button1_Sns0** sensor, and then click **Acquire Noise** as shown in **Figure 7**.
 
-      **Figure 7. CAPSENSE&trade; tuner - SNR measurement: acquire noise**
+      **Figure 7. CAPSENSE&trade; tuner - SNR measurement: Acquire Noise**
 
       <img src="images/tuner-acquire-noise.png" alt="Figure 7"/>
 
@@ -228,7 +236,7 @@ For a list of supported IDEs and more details, see the "Exporting to IDEs" secti
 
          The calculated SNR on this button is displayed, as shown in **Figure 8**. Based on your end system design, test the signal with a finger that matches the size of your normal use case. Typically, finger size targets are ~8 to 9 mm. Consider testing with smaller sizes that should be rejected by the system to ensure that they do not reach the finger threshold.
 
-         **Figure 8. CAPSENSE&trade; tuner - SNR measurement: acquire signal**
+         **Figure 8. CAPSENSE&trade; tuner - SNR measurement: Acquire Signal**
 
          <img src="images/tuner-acquire-signal.png" alt="Figure 8"/>
 
@@ -238,7 +246,7 @@ For a list of supported IDEs and more details, see the "Exporting to IDEs" secti
 
 ## Tuning procedure
 
-<details><summary><b> Create custom BSP for your board </b></summary>
+<details><summary><b> Create a custom BSP for your board </b></summary>
 
 1. Create a custom BSP for your board having any device, by following the steps given in [KBA231373](https://community.infineon.com/t5/Knowledge-Base-Articles/ModusToolbox-2-2-and-later-Make-a-Custom-BSP-KBA231373/ta-p/251107). In this code example, it was created for the device "CY8C4149AZI-S598".
 
@@ -246,9 +254,9 @@ For a list of supported IDEs and more details, see the "Exporting to IDEs" secti
 
 </details>
 
-The following steps explain the tuning procedure.
+The following steps explain the tuning procedure:
 
-**Note:** See the section "Selecting CAPSENSE&trade; hardware parameters" in the [PSoC&trade; 4 and PSoC&trade; 6 MCU CAPSENSE&trade; design guide](https://www.infineon.com/AN85951) to learn about the considerations for selecting each parameter values.
+**Note:** See the section "Selecting CAPSENSE&trade; hardware parameters" in the [PSoC&trade; 4 and PSoC&trade; 6 MCU CAPSENSE&trade; design guide](https://www.infineon.com/AN85951) to learn about the considerations for selecting each parameter value.
 
 **Figure 9. CSD button widget tuning flow**  
 
@@ -261,14 +269,16 @@ Do the following to tune the button widget:
 1. Connect the board to your PC using the provided USB cable through the KitProg3 USB connector.
 
 2. Launch the Device configurator tool.
+   
+   You can launch the Device configurator in the Eclipse IDE for ModusToolbox&trade; software from the **Tools** section in the IDE Quick Panel.
 
-   You can launch the device configurator in Eclipse IDE for ModusToolbox&trade; from the tools section in the IDE Quick panel or in standalone mode from *{ModusToolbox&trade; install directory}/ModusToolbox/tools_{version}/device-configurator/device-configurator*. In this case, after opening the application, select **File** > **Open** and open the *design.modus* file of the respective application, which is present in the *{Application root directory}/bsps/TARGET_\<BSP-NAME>/config* folder.
+   You can also launch it in stand-alone mode from *{ModusToolbox&trade; software install directory}/ModusToolbox/tools_{version}/device-configurator/device-configurator*. In this case, after opening the application, select **File** > **Open** and open the *design.modus* file of the respective application, which is in the *{Application root directory}/bsps/TARGET_\<BSP-NAME>/config* folder.
 
       **Note**: If you are using the custom BSP with the Empty PSoC&trade; 4 starter application, use *{Application root directory}/bsps/TARGET_\<BSP-NAME>/config* folder to open the *design.modus* file.
 
-3. In the [CY8CKIT-041S MAX kit](https://www.infineon.com/CY8CKIT-041S-MAX), the button pins are connected to both channel 0 and channel 1. Hence, make sure to enable channel 0 and channel 1 in the device configurator as shown in **Figure 10**.
+3. In the [CY8CKIT-041S MAX kit](https://www.infineon.com/CY8CKIT-041S-MAX), the button pins are connected to both channel 0 and channel 1. Hence, make sure to enable channel 0 and channel 1 in the Device Configurator as shown in **Figure 10**.
 
-   **Figure 10. Enable MSC channels in device configurator**
+   **Figure 10. Enable MSC channels in Device Configurator**
 
    <img src="images/device-configurator.png" alt="Figure 10"/>
 
@@ -276,17 +286,17 @@ Do the following to tune the button widget:
 
 4. Launch the CAPSENSE&trade; configurator tool.
    
-   You can launch the CAPSENSE&trade; configurator tool in Eclipse IDE for ModusToolbox&trade; from the 'CAPSENSE&trade;' peripheral setting in the device configurator or directly from the Tools section in the IDE Quick panel. You can also launch it in standalone mode from *{ModusToolbox&trade; install directory}/ModusToolbox/tools_{version}/capsense-configurator/capsense-configurator*. In this case, after opening the application, select **File** > **Open** and open the *design.cycapsense* file of the respective application, which is present in the *{Application root directory}/bsps/TARGET_\<BSP-NAME>/config* folder.
+   You can launch the CAPSENSE&trade; configurator tool in Eclipse IDE for ModusToolbox&trade; software from the 'CAPSENSE&trade;' peripheral setting in the Device Configurator or directly from the **Tools** section in the IDE Quick panel. You can also launch it in standalone mode from *{ModusToolbox&trade; install directory}/ModusToolbox/tools_{version}/capsense-configurator/capsense-configurator*. In this case, after opening the application, select **File** > **Open** and open the *design.cycapsense* file of the respective application, which is present in the *{Application root directory}/bsps/TARGET_\<BSP-NAME>/config* folder.
 
    See the [ModusToolbox&trade; CAPSENSE&trade; configurator tool guide](https://www.infineon.com/ModusToolboxCapSenseConfig) for step-by-step instructions on how to configure and launch CAPSENSE&trade; in ModusToolbox&trade;. 
 
 5. In the **Basics** tab, note that two button widgets ‘Button0’ and 'Button1' is configured as a CSD RM (self-cap) and the CSD tuning mode is set as *Manual tuning*.
 
-   **Figure 11. CAPSENSE&trade; configurator - basics tab**
+   **Figure 11. CAPSENSE&trade; configurator - Basic tab**
 
    <img src="images/basic-csd-settings.png" alt="Figure 11"/>
 
-6. Do the following in the General tab under the Advanced tab:
+6. Do the following in the General tab under the **Advanced** tab:
 
    - Set **Scan mode** as **INT driven**.
 
@@ -302,13 +312,13 @@ Do the following to tune the button widget:
 
       2. Select **48** from the **Frequency(MHz)** drop-down list.
 
-   - **Number of init sub-conversions** is set based on the hint shown when you hover over the edit box. Retain default value (will be set in **Stage 3**) 
+   - **Number of init sub-conversions** is set based on the hint shown when you hover over the edit box. Retain the default value (will be set in **Stage 3**) 
 
-   - Check the Enable self-test library selection. This is required for sensor capacitance measurement using BIST.
+   - Check the **Enable self-test library** selection. This is required for sensor capacitance measurement using BIST.
    
    - Retain the default settings for all the filters. You can enable the filters later depending on the signal-to-noise ratio (SNR) requirements in **Stage 4**.
       
-      Filters are used to reduce the peak-to-peak noise. Using filters will result in higher scan time.
+     The filters are used to reduce the peak-to-peak noise. Using the filters will result in higher scan time.
 
    **Figure 12. CAPSENSE&trade; configurator - General settings**
 
@@ -322,13 +332,13 @@ Do the following to tune the button widget:
 
    - Select **Enable CDAC auto-calibration** and **Enable compensation CDAC**. 
 
-      This helps in achieving the required CDAC calibration levels (85% of maximum count) for all sensors in the widget while maintaining the same sensitivity across the sensor elements.
+      This helps in achieving the required CDAC calibration levels (85% of maximum count) for all the sensors in the widget while maintaining the same sensitivity across the sensor elements.
 
    **Figure 13. CAPSENSE&trade; configurator - Advanced CSD settings**
 
    <img src="images/advanced-csd-settings.png" alt="Figure 13"/>
 
-8. Go to the **Widget details** tab. Select **Button0** and **Button1** from the left pane, and then set the following:
+8. Go to the **Widget Details** tab. Select **Button0** and **Button1** from the left pane, and then set the following:
 
    - **Sense clock divider:** Retain default value (will be set in **Stage 3**)
 
@@ -357,7 +367,7 @@ Do the following to tune the button widget:
       
    <img src="images/advanced-widget-settings.png" alt="Figure 14" />
 
-9. Go to the **Scan configuration** tab to select the pins and the scan slots. Do the following:
+9. Go to the **Scan Configuration** tab to select the pins and scan slots. Do the following:
 
    - Configure channels for the button electrodes using the drop-down menu.
 
@@ -367,13 +377,13 @@ Do the following to tune the button widget:
 
    - Configure the scan slots using **Auto-assign slots** option or each sensor is allotted a scan slot based on the entered slot number. 
 
-       The summary section in the **Scan configuration** tab shows 1 scan slots (for 2 sensors), with each channel scanned simultaneously in a single slot. This helps to perform parallel scanning and reduces the total scan time. To scan the sensors in same slot we need to keep both sense clock divider and number of sub-conversions to be same, with the values corresponding to the button with the highest Cp.
+       The summary section in the **Scan Configuration** tab shows 1 scan slots (for 2 sensors), with each channel scanned simultaneously in a single slot. This helps to perform parallel scanning and reduces the total scan time. To scan the sensors in same slot we need to keep both sense clock divider and number of sub-conversions to be same, with the values corresponding to the button with the highest Cp.
 
-      **Note** See [AN85951 – PSoC&trade; 4 and PSoC&trade; 6 MCU CAPSENSE&trade; design Guide](https://www.infineon.com/AN85951) for more details on scan slot allotment rules.
+      **Note** See [AN85951 – PSoC&trade; 4 and PSoC&trade; 6 MCU CAPSENSE&trade; design guide](https://www.infineon.com/AN85951) for more details on Scan slot allotment rules.
 
    - Check the notice list for warning or errors.
 
-   **Figure 15. Scan configuration tab**
+   **Figure 15. Scan Configuration tab**
 
    <img src="images/scan-configuration.png" alt="Figure 15"/>
 
@@ -395,11 +405,11 @@ Use one of the following options to determine the Cp of the sensor:
 
    1. Estimate the Cp of the sensor electrode using the `Cy_CapSense_MeasureCapacitanceSensorElectrode()` function in firmware. The measured capacitance value is in femtofarad (fF).
    
-   2. Program the board in debug mode.
+   2. Program the board in Debug mode.
 
       In the IDE, use the **\<Application Name> Debug (KitProg3)** configuration in the **Quick Panel**.
 
-      For more details, see the "Program and Debug" section in the Eclipse IDE for ModusToolbox&trade; user guide: *{ModusToolbox install directory}/ide_{version}/docs/mt_ide_user_guide.pdf*.
+   For more details, see the "Program and debug" section in the Eclipse IDE for ModusToolbox&trade; software user guide: *{ModusToolbox&trade; software install directory}/docs_{version}/mtb_ide_user_guide.pdf*.
 
    3. Place a breakpoint after the capacitance measurement.
 
@@ -515,24 +525,24 @@ Use one of the following options to determine the Cp of the sensor:
       - The auto-calibrated reference CDAC value should be above (20/compensation CDAC divider). Verify this once the initial hardware parameters are loaded into the device.
 
       - Click **Button0** in the **Widget Explorer** to view the Reference CDAC value in the sensor parameters window.
-      - Also, click each sensor element, for instance, **Button0_Sns0** in the **Widget Explorer** to view the Compensation CDAC in the sensor parameters window. 
+      - Also, click each sensor element, for example, **Button0_Sns0** in the **Widget Explorer** to view the Compensation CDAC in the sensor parameters window. 
 
       Refer to the [CAPSENSE&trade; design guide](https://www.infineon.com/AN85951) for the recommended guidelines on valid CDAC range (with and without compenation) to result in calibration PASS across multiple boards due to board-to-board variations.
 
 
-      **Figure 19. Widget explorer - button 0**
+      **Figure 19. Widget Explorer - button 0**
 
       <img src="images/tuner-cdac-setting-b0.png" alt="Figure 19" width="600"/>
 
 
-      **Figure 20. Widget explorer - button 1**
+      **Figure 20. Widget Explorer - button 1**
 
       <img src="images/tuner-cdac-setting-b1.png" alt="Figure 20" width="600"/>
 
 
-   4. If the above condition is not satified. Fine-tune the sense clock divider to bring the CDAC value within range.
+   4. If the above condition is not satified, fine-tune the sense clock divider to bring the CDAC value within range.
 
-      1. If the reference CDAC value is not in the recommended range, increase or decrease the sense clock divider in the widget hardware parameters window.
+      1. If the Reference CDAC value is not in the recommended range, increase or decrease the sense clock divider in the Widget hardware parameters window.
 
          **Note** From the raw count equation ( see [AN85951 – PSoC&trade; 4 and PSoC&trade; 6 MCU CAPSENSE&trade; design guide](https://www.infineon.com/an85951)), it is evident that increasing the sense clock divider will decrease the reference CDAC value for a given calibration percent and vice versa.
 
@@ -544,7 +554,7 @@ Use one of the following options to determine the Cp of the sensor:
          
       3. Click each sensor element, for instance, **Button0** in the Widget explorer.
 
-      4. Observe the Reference CDAC value in the **Sensing parameters** section of the widget parameters window.
+      4. Observe the Reference CDAC value in the **Sensing parameters** section of the Widget Parameters window.
 
       5. Repeat steps 1 to 4 until you obtain Reference CDAC value is above (20/Compensation CDAC divider).
 
@@ -577,28 +587,28 @@ Use one of the following options to determine the Cp of the sensor:
 
    **Note:** The sense clock divider and the number of sub-conversions should be same for both the sensors scanned in the same slot. Use the values corresponding to the sensor with the highest Cp.
 
-2. Measure SNR as mentioned in the [Operation](#operation) section. And tune until the minimum SNR of 5:1 and at least a signal count greater than 50 are achieved.
+2. Measure SNR as mentioned in the [Operation](#operation) section. And tune until the minimum SNR of 5:1 and a signal count greater than 50 are achieved.
 
 3. Skip this step if the following conditions are met:
 
       - Measured SNR from the previous stage is greater than 5:1.
-      - Signal count is greater than 50.
+      - Signal count > 50.
 
-   If your system is very noisy (counts >20), do the following to set enable fitlers. 
+   If your system is very noisy (counts >20), do the following to set enable fitlers: 
 
-   1. Open **CAPSENSE&trade; configurator** from ModusToolbox&trade; quick panel and select the appropriate filter:
+   1. Open **CAPSENSE&trade; configurator** from ModusToolbox&trade; software quick panel and select the appropriate filter:
 
       **Figure 23. Filter settings in CAPSENSE&trade; configurator**
 
       <img src="images/advanced-filter-settings.png" alt="Figure 23"/>
 
       **Note:**
-      - Add the filter based on the type of noise in your measurements. See [ModusToolbox&trade; CAPSENSE&trade; configurator guide](https://www.infineon.com/ModusToolboxCapSenseConfig for details.
+      - Add the filter based on the type of noise in your measurements. See [ModusToolbox&trade; software CAPSENSE&trade; configurator guide](https://www.infineon.com/ModusToolboxCapSenseConfig) for details.
       - The current example has SNR around 10:1; therefore, filters are not enabled.
 
    2. Reprogram the device to update filter settings.
  
-### Measure refresh rate.
+### Measure Refresh rate.
 
 Refresh rate will impact overall power consumption and user experience of the device in CAPSENSE&trade; applications. You can measure the refresh rate by toggling one of the GPIOs in each sensor scan loop. Probing the GPIO (P10.4 on J3) on the Oscilloscope shows the refresh rate as shown in **Figure 24**.
 
@@ -629,9 +639,9 @@ If the Refresh rate meets your requirements, go to next step otherwise fine tune
 
 The software threshold is set for each widget based on the diff counts. Steps for setting the threshold for one of the widget is given below. 
 
-1. Switch to the **Graph view** tab and select **Button1**.
+1. Switch to the **Graph View** tab and select **Button1**.
 
-2. Touch the sensor and monitor the touch signal in the **Sensor signal** graph as **Figure 25** shows. Place the metal finger at all possible positions and use the least signal for setting the software threshold. Also ensure to ground the metal finger.
+2. Touch the sensor and monitor the touch signal in the **Sensor Signal** graph as **Figure 25** shows. Place the metal finger at all possible positions and use the least signal for setting the software threshold. Also ensure to ground the metal finger.
 
    **Figure 25. Sensor signal when the sensor is touched**
 
@@ -649,7 +659,7 @@ The software threshold is set for each widget based on the diff counts. Steps fo
 
    - Debounce = 3
 
-4. Set the threshold parameters in the **Widget/Sensor parameters** section of the CAPSENSE&trade; tuner:
+4. Set the threshold parameters in the **Widget/Sensor parameters** section of the CAPSENSE&trade; tuner.
 
    **Figure 26. Widget threshold parameters**
 
@@ -689,7 +699,7 @@ The software threshold is set for each widget based on the diff counts. Steps fo
 
 ## Debugging
 
-You can debug the example to step through the code. In the IDE, use the **\<Application Name> Debug (KitProg3_MiniProg4)** configuration in the **Quick Panel**. For more details, see the "Program and debug" section in the [Eclipse IDE for ModusToolbox&trade; user guide](https://www.infineon.com/MTBEclipseIDEUserGuide).
+You can debug the example to step through the code. In the IDE, use the **\<Application Name> Debug (KitProg3_MiniProg4)** configuration in the **Quick Panel**. For details, see the "Program and debug" section in the [Eclipse IDE for ModusToolbox&trade; software user guide](https://www.infineon.com/MTBEclipseIDEUserGuide).
 
 
 ## Design and implementation
@@ -698,24 +708,24 @@ The project contains two button widgets configured in CSD-RM sensing mode. See t
 
 The project uses the [CAPSENSE&trade; middleware](https://github.com/Infineon/capsense) (see ModusToolbox&trade; software user guide for more details on selecting a middleware). See [AN85951 – PSoC&trade; 4 and PSoC&trade; 6 MCU CAPSENSE&trade; design guide](https://www.infineon.com/an85951) for more details on CAPSENSE&trade; features and usage.
 
-The [ModusToolbox&trade; software](https://www.infineon.com/ModusToolbox) provides a GUI-based tuner application for debugging and tuning the CAPSENSE&trade; system. The *CAPSENSE&trade; tuner* application works with EZI2C and UART communication interfaces. This project has an SCB block configured in EZI2C mode to establish communication with the on-board KitProg, which in turn enables reading the CAPSENSE&trade; raw data by the CAPSENSE&trade; tuner. See [EZI2C - Peripheral settings](#resources-and-settings).
+The [ModusToolbox&trade;](https://www.infineon.com/ModusToolbox) provides a GUI-based tuner application for debugging and tuning the CAPSENSE&trade; system. The *CAPSENSE&trade; tuner* application works with EZI2C and UART communication interfaces. This project has an SCB block configured in EZI2C mode to establish communication with the on-board KitProg, which in turn enables reading the CAPSENSE&trade; raw data by the CAPSENSE&trade; tuner. See [EZI2C - Peripheral settings](#resources-and-settings).
 
 The CAPSENSE&trade; data structure that contains the CAPSENSE&trade; raw data is exposed to the CAPSENSE&trade; tuner by setting up the I2C communication data buffer with the CAPSENSE&trade; data structure. This enables the tuner to access the CAPSENSE&trade; raw data for tuning and debugging CAPSENSE&trade;.
 
-The successful tuning of the button is indicated by an LED in the pioneer kit: the LED is turned ON when the finger touches the button and turned OFF when the finger is removed from the button.
+The successful tuning of the button is indicated by an LED in the pioneer kit; the LED is turned ON when the finger touches the button and turned OFF when the finger is removed from the button.
 
 
-### Steps to setup the VDDA supply voltage in device configurator
+### Steps to setup the VDDA supply voltage in Device configurator
 
-1. Open device configurator from the Quick panel. 
+1. Open Device configurator from the Quick panel. 
 
 2. Go to the **System** tab. Select the **Power** resource, and set the set the VDDA value under **Operating conditions** as shown in **Figure 29**. 
 
-   **Figure 29. Setting the VDDA supply in system tab of device configurator**
+   **Figure 29. Setting the VDDA supply in System tab of device configurator**
 
    <img src="images/vdda-settings.png" alt="Figure 29"/> 
 
-**Note**: [PSoC&trade; 4100S Max pioneer kit](https://www.infineon.com/CY8CKIT-041S-MAX) has two onboard regulators 3.3V and 5V. To use 3.3V, place the jumper J10 at positions 2 and 3. See the kit user guide for more details.
+**Note**: [PSoC&trade; 4100S Max pioneer kit](https://www.infineon.com/CY8CKIT-041S-MAX) has two onboard regulators 3.3V and 5V. To use 3.3V, place the jumper J10 at positions 2 and 3. See the Kit user guide for more details.
 
 
 ### Resources and settings
@@ -749,12 +759,12 @@ The successful tuning of the button is indicated by an LED in the pioneer kit: t
 Resources  | Links
 -----------|----------------------------------
 Application notes  | [AN79953](https://www.infineon.com/AN79953) – Getting started with PSoC&trade; 4 <br> [AN85951](https://www.infineon.com/AN85951) – PSoC&trade; 4 and PSoC&trade; 6 MCU CAPSENSE&trade; design guide
-Code examples  | [Using ModusToolbox&trade; software](https://github.com/Infineon/Code-Examples-for-ModusToolbox-Software) on GitHub <br> [Using PSoC&trade; Creator](https://www.infineon.com/cms/en/design-support/software/code-examples/psoc-3-4-5-code-examples-for-psoc-creator/)
+Code examples  | [Using ModusToolbox&trade; software](https://github.com/Infineon/Code-Examples-for-ModusToolbox-Software) on GitHub <br /> [Using PSoC&trade; Creator](https://www.infineon.com/cms/en/design-support/software/code-examples/psoc-3-4-5-code-examples-for-psoc-creator)
 Device documentation | [PSoC&trade; 4 datasheets](https://www.infineon.com/cms/en/search.html#!view=downloads&term=psoc4&doc_group=Data%20Sheet) <br>[PSoC&trade; 4 technical reference manuals](https://www.infineon.com/cms/en/search.html#!view=downloads&term=psoc4&doc_group=Additional%20Technical%20Information)
-Development kits | Select your kits from the [evaluation board finder](https://www.infineon.com/cms/en/design-support/finder-selection-tools/product-finder/evaluation-board) page.
-Libraries on GitHub | [mtb-pdl-cat2](https://github.com/Infineon/mtb-pdl-cat2) – PSoC&trade; 4 peripheral driver library (PDL)<br> [mtb-hal-cat2](https://github.com/Infineon/mtb-hal-cat2) – Hardware abstraction layer (HAL) library
+Development kits | Select your kits from the [evaluation board finder](https://www.infineon.com/cms/en/design-support/finder-selection-tools/product-finder/evaluation-board)
+Libraries on GitHub | [mtb-pdl-cat2](https://github.com/Infineon/mtb-pdl-cat2) – PSoC&trade; 4 Peripheral Driver Library (PDL)<br> [mtb-hal-cat2](https://github.com/Infineon/mtb-hal-cat2) – Hardware abstraction layer (HAL) library
 Middleware on GitHub | [capsense](https://github.com/Infineon/capsense) – CAPSENSE&trade; library and documents <br>
-Tools  | [ModusToolbox&trade; software](https://www.infineon.com/modustoolbox) – ModusToolbox&trade; software is a collection of easy-to-use software and tools enabling rapid development with Infineon MCUs, covering applications from embedded sense and control to wireless and cloud-connected systems using AIROC&trade; Wi-Fi and Bluetooth® connectivity devices. <br /> [PSoC&trade; Creator](https://www.infineon.com/cms/en/design-support/tools/sdk/psoc-software/psoc-creator/) – IDE for PSoC&trade; and FM0+ MCU development
+Tools  | [Eclipse IDE for ModusToolbox&trade; software](https://www.infineon.com/modustoolbox) – ModusToolbox&trade; software is a collection of easy-to-use software and tools enabling rapid development with Infineon MCUs, covering applications from embedded sense and control to wireless and cloud-connected systems using AIROC&trade; Wi-Fi and Bluetooth&reg; connectivity devices. <br /> [PSoC&trade; Creator](https://www.infineon.com/cms/en/design-support/tools/sdk/psoc-software/psoc-creator/) – IDE for PSoC&trade; and FM0+ MCU development
 
 <br />
 
@@ -770,12 +780,15 @@ Document title: *CE231078* - *PSoC&trade; 4: MSC CAPSENSE&trade; CSD button tuni
 | ------- | --------------------- |
 | 1.0.0   | New code example. <br /> This version is not backward compatible with ModusToolbox&trade; software v2.1.     |
 | 2.0.0   | Code example is updated for ModusToolbox&trade; software v2.4. <br /> This version is not backward compatible with ModusToolbox&trade; software v2.3 or older version.    |
-| 3.0.0   | Major update to support ModusToolbox&trade;  v3.0. This version is not backward compatible with previous versions of ModusToolbox&trade;. |
+| 3.0.0   | Major update to support ModusToolbox&trade; software v3.0. This version is not backward compatible with previous versions of ModusToolbox&trade;. |
+| 3.1.0   | Updated to support ModusToolbox&trade; software v3.1 and CAPSENSE&trade; middleware v4.X.    |
 <br />
----------------------------------------------------------
 
-© Cypress Semiconductor Corporation, 2021-2022. This document is the property of Cypress Semiconductor Corporation, an Infineon Technologies company, and its affiliates ("Cypress").  This document, including any software or firmware included or referenced in this document ("Software"), is owned by Cypress under the intellectual property laws and treaties of the United States and other countries worldwide.  Cypress reserves all rights under such laws and treaties and does not, except as specifically stated in this paragraph, grant any license under its patents, copyrights, trademarks, or other intellectual property rights.  If the Software is not accompanied by a license agreement and you do not otherwise have a written agreement with Cypress governing the use of the Software, then Cypress hereby grants you a personal, non-exclusive, nontransferable license (without the right to sublicense) (1) under its copyright rights in the Software (a) for Software provided in source code form, to modify and reproduce the Software solely for use with Cypress hardware products, only internally within your organization, and (b) to distribute the Software in binary code form externally to end users (either directly or indirectly through resellers and distributors), solely for use on Cypress hardware product units, and (2) under those claims of Cypress’s patents that are infringed by the Software (as provided by Cypress, unmodified) to make, use, distribute, and import the Software solely for use with Cypress hardware products.  Any other use, reproduction, modification, translation, or compilation of the Software is prohibited.
+
+-------------------------------------------------------------------------------
+
+© Cypress Semiconductor Corporation, 2020-2023. This document is the property of Cypress Semiconductor Corporation, an Infineon Technologies company, and its affiliates ("Cypress").  This document, including any software or firmware included or referenced in this document ("Software"), is owned by Cypress under the intellectual property laws and treaties of the United States and other countries worldwide.  Cypress reserves all rights under such laws and treaties and does not, except as specifically stated in this paragraph, grant any license under its patents, copyrights, trademarks, or other intellectual property rights.  If the Software is not accompanied by a license agreement and you do not otherwise have a written agreement with Cypress governing the use of the Software, then Cypress hereby grants you a personal, non-exclusive, nontransferable license (without the right to sublicense) (1) under its copyright rights in the Software (a) for Software provided in source code form, to modify and reproduce the Software solely for use with Cypress hardware products, only internally within your organization, and (b) to distribute the Software in binary code form externally to end users (either directly or indirectly through resellers and distributors), solely for use on Cypress hardware product units, and (2) under those claims of Cypress’s patents that are infringed by the Software (as provided by Cypress, unmodified) to make, use, distribute, and import the Software solely for use with Cypress hardware products.  Any other use, reproduction, modification, translation, or compilation of the Software is prohibited.
 <br />
 TO THE EXTENT PERMITTED BY APPLICABLE LAW, CYPRESS MAKES NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, WITH REGARD TO THIS DOCUMENT OR ANY SOFTWARE OR ACCOMPANYING HARDWARE, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  No computing device can be absolutely secure.  Therefore, despite security measures implemented in Cypress hardware or software products, Cypress shall have no liability arising out of any security breach, such as unauthorized access to or use of a Cypress product. CYPRESS DOES NOT REPRESENT, WARRANT, OR GUARANTEE THAT CYPRESS PRODUCTS, OR SYSTEMS CREATED USING CYPRESS PRODUCTS, WILL BE FREE FROM CORRUPTION, ATTACK, VIRUSES, INTERFERENCE, HACKING, DATA LOSS OR THEFT, OR OTHER SECURITY INTRUSION (collectively, "Security Breach").  Cypress disclaims any liability relating to any Security Breach, and you shall and hereby do release Cypress from any claim, damage, or other liability arising from any Security Breach.  In addition, the products described in these materials may contain design defects or errors known as errata which may cause the product to deviate from published specifications. To the extent permitted by applicable law, Cypress reserves the right to make changes to this document without further notice. Cypress does not assume any liability arising out of the application or use of any product or circuit described in this document. Any information provided in this document, including any sample design information or programming code, is provided only for reference purposes.  It is the responsibility of the user of this document to properly design, program, and test the functionality and safety of any application made of this information and any resulting product.  "High-Risk Device" means any device or system whose failure could cause personal injury, death, or property damage.  Examples of High-Risk Devices are weapons, nuclear installations, surgical implants, and other medical devices.  "Critical Component" means any component of a High-Risk Device whose failure to perform can be reasonably expected to cause, directly or indirectly, the failure of the High-Risk Device, or to affect its safety or effectiveness.  Cypress is not liable, in whole or in part, and you shall and hereby do release Cypress from any claim, damage, or other liability arising from any use of a Cypress product as a Critical Component in a High-Risk Device. You shall indemnify and hold Cypress, including its affiliates, and its directors, officers, employees, agents, distributors, and assigns harmless from and against all claims, costs, damages, and expenses, arising out of any claim, including claims for product liability, personal injury or death, or property damage arising from any use of a Cypress product as a Critical Component in a High-Risk Device. Cypress products are not intended or authorized for use as a Critical Component in any High-Risk Device except to the limited extent that (i) Cypress’s published data sheet for the product explicitly states Cypress has qualified the product for use in a specific High-Risk Device, or (ii) Cypress has given you advance written authorization to use the product as a Critical Component in the specific High-Risk Device and you have signed a separate indemnification agreement.
 <br />
-Cypress, the Cypress logo, and combinations thereof, WICED, ModusToolbox, PSoC, CapSense, EZ-USB, F-RAM, and Traveo are trademarks or registered trademarks of Cypress or a subsidiary of Cypress in the United States or in other countries. For a more complete list of Cypress trademarks, visit cypress.com. Other names and brands may be claimed as property of their respective owners.
+Cypress, the Cypress logo, and combinations thereof, WICED, ModusToolbox, PSoC, CapSense, EZ-USB, F-RAM, and Traveo are trademarks or registered trademarks of Cypress or a subsidiary of Cypress in the United States or in other countries. For a more complete list of Cypress trademarks, visit www.infineon.com. Other names and brands may be claimed as property of their respective owners.
